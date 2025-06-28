@@ -1,18 +1,40 @@
 package app
 
-import "go-in-action/app/controllers"
+import (
+	"go-in-action/config"
 
-type Application struct {
-	Server *controllers.Server
+	"github.com/gin-gonic/gin"
+	"github.com/roonglit/credentials/pkg/credentials"
+)
+
+type Server struct {
+	Router *gin.Engine
+	Config *config.Config
 }
 
-func New() *Application {
-	server := controllers.New()
-	return &Application{
-		Server: server,
+func New() *Server {
+	router := gin.Default()
+	config := loadConfig()
+
+	server := &Server{
+		Router: router,
+		Config: config,
 	}
+	return server
 }
 
-func (app *Application) Run() {
-	app.Server.Run()
+func (s *Server) Run() {
+	s.Router.Run(s.Config.ServerAddress)
+}
+
+func loadConfig() *config.Config {
+	reader := credentials.NewConfigReader()
+
+	var config config.Config
+
+	if err := reader.Read(gin.Mode(), &config); err != nil {
+		panic("Failed to load configuration: " + err.Error())
+	}
+
+	return &config
 }
