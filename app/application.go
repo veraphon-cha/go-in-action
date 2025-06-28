@@ -14,5 +14,5 @@ func New() *Application {
 }
 
 func (app *Application) Run() {
-
+	app.Server.Run()
 }
