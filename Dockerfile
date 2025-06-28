@@ -17,6 +17,7 @@ FROM golang:1.24.4-alpine3.22
 WORKDIR /app
 
 # Copy required files
+COPY ./config/credentials.yml.enc config/credentials.yml.enc
 COPY --from=builder /app/main .
 COPY ./start.sh /app/start.sh
 
